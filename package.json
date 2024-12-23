@@ -6,15 +6,22 @@
 	"scripts": {
 		"knex": "tsx --env-file=.env -- ./node_modules/knex/bin/cli.js --knexfile src/boot/knex.ts",
 		"lint": "eslint --fix",
+		"lint-staged": "lint-staged",
 		"migrate:down": "npm run knex -- migrate:down",
 		"migrate:latest": "npm run knex -- migrate:latest",
 		"migrate:make": "npm run knex -- migrate:make",
 		"migrate:rollback": "npm run knex -- migrate:rollback",
 		"migrate:up": "npm run knex -- migrate:up",
+		"prepare": "husky",
 		"prettier:check": "prettier . --check",
 		"prettier:write": "prettier . --write",
-		"start": "tsx --env-file=.env src/index.ts",
-		"prepare": "husky"
+		"start": "tsx --env-file=.env src/index.ts"
+	},
+	"lint-staged": {
+		"**/*": [
+			"npm run lint",
+			"npm run prettier:write"
+		]
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
@@ -47,11 +54,5 @@
 		"tsx": "^4.19.2",
 		"typescript": "^5.7.2",
 		"typescript-eslint": "^8.18.1"
-	},
-	"lint-staged": {
-		"**/*": [
-			"npm run lint",
-			"npm run prettier:write"
-		]
 	}
 }
