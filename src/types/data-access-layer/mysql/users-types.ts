@@ -1,15 +1,9 @@
 export interface UserInterface {
-	userId?: number;
-	userUuid?: string;
-	username: string;
+	userId?: string;
 	email: string;
-	isEmailVerified?: boolean;
-	mobile: string | null;
-	isMobileVerified?: boolean;
-	roleId: number;
-	isSso?: boolean;
-	active?: boolean;
-	archive?: boolean;
+	password: string;
+	role: 'admin' | 'editor' | 'viewer';
+	parent_id?: string;
 	createdDate?: Date;
 	updatedDate?: Date;
 }

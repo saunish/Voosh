@@ -1,9 +1,7 @@
 const messageCodeConfig = {
 	SUCCESS: {
 		status: 200,
-		success: true,
 		message: 'Success',
-		messageCode: 'VFPL-CORE-2000',
 	},
 	VALIDATION_ERROR: {
 		status: 400,
