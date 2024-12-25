@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from 'express';
-import { messageCodeConfig } from '../configs/index.js';
-import { createHttpError, logger } from './index.js';
+import { createHttpResponse, logger } from './index.js';
 import Joi from 'joi';
 
 class RequestValidator {
@@ -13,7 +12,7 @@ class RequestValidator {
 			if (bodyValidation.error) {
 				const error = bodyValidation.error?.details;
 				const errorMessage = error?.map((err: unknown & { message: string }) => err.message);
-				const httpValidationError = createHttpError({ ...messageCodeConfig.VALIDATION_ERROR, body: errorMessage });
+				const httpValidationError = createHttpResponse({ status: 400, message: `Bad Request, Reason: ${errorMessage}` });
 				logger.error({ functionName, message: 'Error in request validator', className, error });
 				return next(httpValidationError);
 			} else return next();

@@ -1,19 +1,16 @@
 import { Request, Response, NextFunction, Application, ErrorRequestHandler } from 'express';
-import { createHttpError, logger } from '../utils/index.js';
-import { messageCodeConfig } from '../configs/index.js';
+import { createHttpResponse, logger } from '../utils/index.js';
 
 interface HttpError extends Error {
 	status: number;
+	data?: unknown;
 	message: string;
-	messageCode?: string;
-	success: boolean;
-	body?: unknown;
-	expose?: boolean;
+	error?: unknown;
 }
 
 class ErrorHandler {
 	private notFound = (_req: Request, _res: Response, next: NextFunction): void => {
-		const error = createHttpError(messageCodeConfig.NOT_FOUND);
+		const error = createHttpResponse({ status: 404, message: 'Not Found' });
 		next(error);
 	};
 
@@ -21,16 +18,16 @@ class ErrorHandler {
 		const className = ErrorHandler.name;
 		const functionName = this.errorHandler.name;
 		try {
-			const { status, message, messageCode, success, body, expose } = httpError;
-			if (status && message && success !== undefined) {
-				return res.status(status).json({ status, success, message, messageCode, ...(expose ? { body } : null) });
+			const { status, data, message, error } = httpError;
+			if (status && message) {
+				return res.status(status).json({ status, data, message, error });
 			} else {
 				logger.error({ functionName, message: 'unknown error found', className, error: httpError });
-				return res.status(500).json(messageCodeConfig.INTERNAL_SERVER_ERROR);
+				return res.status(500).json({ status: 500, data: null, message: 'Internal Server Error', error: null });
 			}
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'errorHandler catch error =>', error, className });
-			return res.status(500).json(messageCodeConfig.INTERNAL_SERVER_ERROR);
+			return res.status(500).json({ status: 500, data: null, message: 'Internal Server Error', error: null });
 		}
 	};
 

@@ -1,8 +1,6 @@
-import { messageCodeConfig } from '../../configs/message-codes.js';
-import { UsersDAO } from '../../data-access-layer/mysql/users.js';
-import { UserInterface } from '../../types/index.js';
+import { UsersDAO, UserInterface } from '../../data-access-layer/mysql/users.js';
 import { BcryptHelper } from '../../utils/bcrypt-helper.js';
-import { createHttpError } from '../../utils/create-http-error.js';
+import { createHttpResponse, hasValue, safePromise } from '../../utils/index.js';
 import { logger } from '../../utils/logger.js';
 
 class UserService {
@@ -12,17 +10,25 @@ class UserService {
 		const className = UserService.name;
 		const functionName = this.createUser.name;
 		try {
+			const [errorVerifyUser, verifyUser] = await safePromise(this.usersDAO.getUserByEmail(userData.email));
+			if (hasValue(errorVerifyUser)) {
+				return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request` }));
+			} else if (hasValue(verifyUser)) {
+				return Promise.reject(createHttpResponse({ status: 409, message: `Email already exists.` }));
+			}
 			const hashedPassword: string = await BcryptHelper.hashPassword(userData.password);
-			const user: UserInterface = {
+			const user = {
 				...userData,
 				password: hashedPassword,
+				role: 'admin',
 			};
-			const createdUser = await this.usersDAO.createUser(user);
-			if (!createdUser) {
-				return Promise.reject(createHttpError(messageCodeConfig.CREATE_ERROR));
+			const createdUser = await safePromise(this.usersDAO.createUser(user));
+			if (hasValue(createdUser)) {
+				return createHttpResponse({ status: 201, message: 'User created successfully' });
+			} else {
+				return createHttpResponse({ status: 500, message: 'Internal Server Error' });
 			}
-			return createdUser;
-		} catch (error) {
+		} catch (error: unknown) {
 			logger.error({ functionName, message: 'createUser catch error', error, className });
 			throw error;
 		}

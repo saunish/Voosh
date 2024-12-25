@@ -4,9 +4,9 @@ export async function up(knex: Knex): Promise<void> {
 	return knex.schema.createTable('favorites', (table) => {
 		table.bigIncrements('favorite_id').primary();
 		table.uuid('favoriteId').notNullable().defaultTo(knex.raw('(uuid())'));
-		table.bigInteger('user_id').notNullable().references('users.user_id').unsigned().onDelete('CASCADE');
+		table.uuid('userId').notNullable().references('users.userId').onDelete('CASCADE');
 		table.enum('category', ['album', 'artist', 'track']).notNullable();
-		table.bigInteger('item_id').unsigned().notNullable();
+		table.uuid('itemId').notNullable();
 		table.timestamp('createdDate').defaultTo(knex.fn.now());
 		table.timestamp('updatedDate').nullable().defaultTo(knex.raw('CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'));
 	});
