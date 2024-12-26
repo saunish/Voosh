@@ -2,6 +2,8 @@ import { UsersDAO, UserInterface } from '../../data-access-layer/mysql/users.js'
 import { BcryptHelper } from '../../utils/bcrypt-helper.js';
 import { createHttpResponse, generateToken, hasValue, safePromise } from '../../utils/index.js';
 import { logger } from '../../utils/logger.js';
+import jwt from 'jsonwebtoken';
+import { setCache } from '../../utils/redis-helper.js';
 
 class UserService {
 	private usersDAO = new UsersDAO();
@@ -59,6 +61,22 @@ class UserService {
 			}
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'createUser catch error', error, className });
+			throw error;
+		}
+	}
+
+	public async logout(token: string): Promise<unknown> {
+		const className = UserService.name;
+		const functionName = this.logout.name;
+		try {
+			const decoded = jwt.decode(token) as { exp: number };
+			const expiry = decoded.exp - Math.floor(Date.now() / 1000);
+			if (expiry > 0) {
+				await setCache(token, 'blacklisted', expiry);
+			}
+			return createHttpResponse({ status: 200, message: 'User logged out successfully' });
+		} catch (error: unknown) {
+			logger.error({ functionName, message: 'logout catch error', error, className });
 			throw error;
 		}
 	}

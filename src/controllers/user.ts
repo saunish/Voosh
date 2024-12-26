@@ -35,6 +35,22 @@ class UserController {
 		}
 	};
 
+	public logout = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+		const className = UserController.name;
+		const functionName = this.logout.name;
+		try {
+			console.log(req.header('authorization')?.replace('Bearer ', ''));
+			const loginUserOut = await this.userServices.logout(req.header('authorization')?.replace('Bearer ', '') as string);
+			if (!loginUserOut) {
+				return res.status(400).json({ status: 400, data: null, message: 'logout failed', error: null });
+			}
+			return res.status(200).json(loginUserOut);
+		} catch (error) {
+			logger.error({ functionName, message: 'logout catch error', error, className });
+			return next(error);
+		}
+	};
+
 	public secure = async (_req: Request, res: Response): Promise<Response> => {
 		return res.status(200).json({ status: 200, data: null, message: 'secure route', error: null });
 	};

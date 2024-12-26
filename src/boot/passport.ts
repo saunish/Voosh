@@ -5,6 +5,7 @@ import { hasValue, safePromise } from '../utils/helpers.js';
 import { logger } from '../utils/logger.js';
 import { createHttpResponse } from '../utils/create-http-response.js';
 import { AppAbility } from '../configs/casl-config.js';
+import { getCache } from '../utils/redis-helper.js';
 
 declare module 'express' {
 	interface Request {
@@ -25,9 +26,15 @@ class PassportLoader {
 				{
 					jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
 					secretOrKey: process.env.JWT_SECRET || 'default_secret',
+					passReqToCallback: true,
 				},
-				async (jwtPayload: { userId: string }, done: VerifiedCallback) => {
+				async (req, jwtPayload: { userId: string }, done: VerifiedCallback) => {
 					try {
+						const checkTokenValidity = await getCache(req.header('authorization')?.replace('Bearer ', '') as string);
+						console.log(JSON.parse(checkTokenValidity as string));
+						if (JSON.parse(checkTokenValidity as string) === 'blacklisted') {
+							return done(null, false, createHttpResponse({ status: 401, message: 'Unauthorized' }));
+						}
 						const [userError, user] = await safePromise(this.userDAO.getUserById(jwtPayload.userId, null, null, true));
 						if (userError) {
 							return done(userError);
