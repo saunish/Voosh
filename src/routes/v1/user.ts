@@ -1,5 +1,5 @@
 import { UserController } from '../../controllers/index.js';
-import { authValidatorInstance, requestValidatorInstance } from '../../utils/index.js';
+import { authValidatorInstance, checkAbility, requestValidatorInstance } from '../../utils/index.js';
 import Joi from 'joi';
 
 const userController = new UserController();
@@ -34,7 +34,7 @@ const routeConfig = [
 	{
 		path: 'secure',
 		method: 'post',
-		middlewares: [authValidatorInstance.validate()],
+		middlewares: [authValidatorInstance.validate(), checkAbility('delete', 'Track')],
 		controller: userController.secure,
 	},
 ];

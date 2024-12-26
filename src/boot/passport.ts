@@ -4,6 +4,13 @@ import { UsersDAO } from '../data-access-layer/mysql/users.js';
 import { hasValue, safePromise } from '../utils/helpers.js';
 import { logger } from '../utils/logger.js';
 import { createHttpResponse } from '../utils/create-http-response.js';
+import { AppAbility } from '../configs/casl-config.js';
+
+declare module 'express' {
+	interface Request {
+		ability?: AppAbility;
+	}
+}
 
 class PassportLoader {
 	private static userDAO = new UsersDAO();
