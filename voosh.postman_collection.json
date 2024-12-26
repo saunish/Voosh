@@ -1,0 +1,757 @@
+{
+	"info": {
+		"_postman_id": "40d013a1-38c1-4102-914e-3270cf155748",
+		"name": "voosh",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "5754847"
+	},
+	"item": [
+		{
+			"name": "auth/signup",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"admin@xyz.com\",\n    \"password\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/signup",
+					"host": ["{{baseUrl}}"],
+					"path": ["auth", "signup"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth/login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"admin@xyz.com\",\n    \"password\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/auth/login",
+					"host": ["{{baseUrl}}"],
+					"path": ["auth", "login"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "auth/logout",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyMzU2NzcsImV4cCI6MTczNTMyMjA3N30.qqLZYPgSYYL4bBTtNs3Mdaj-iHEWY4iF2C33PKuYCCw",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/auth/logout",
+					"host": ["{{baseUrl}}"],
+					"path": ["auth", "logout"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/getAll",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyMzU4OTksImV4cCI6MTczNTMyMjI5OX0.NhN9By9oe80CZMp7m2DNBTkPaXqmJOLqrXMWhmD6iNU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/getAll?limit=3&offset=0",
+					"host": ["{{baseUrl}}"],
+					"path": ["users", "getAll"],
+					"query": [
+						{
+							"key": "limit",
+							"value": "3"
+						},
+						{
+							"key": "offset",
+							"value": "0"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/add-user",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyMzU4OTksImV4cCI6MTczNTMyMjI5OX0.NhN9By9oe80CZMp7m2DNBTkPaXqmJOLqrXMWhmD6iNU",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\": \"abc2@xyz.com\",\n    \"password\": \"abcxyz\",\n    \"role\": \"editor\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/add-user",
+					"host": ["{{baseUrl}}"],
+					"path": ["users", "add-user"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/update-password",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxY2FlMGJiOC1jM2I3LTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFiYzFAeHl6LmNvbSIsInJvbGUiOiJlZGl0b3IiLCJpYXQiOjE3MzUyMzk0NjQsImV4cCI6MTczNTMyNTg2NH0.zp5eIwpwtrk0hlK298ipnvV3F6b-jt3MOUG-ljtorUs",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"oldPassword\": \"abcxyz\",\n    \"newPassword\": \"admin\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/users/update-password",
+					"host": ["{{baseUrl}}"],
+					"path": ["users", "update-password"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "users/delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyMzk3MTAsImV4cCI6MTczNTMyNjExMH0.-gK4IcjOzlH6bQJLn61LW7A2gaXag0vaWEEmnU-352E",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/users/24e989cb-c3b7-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["users", "24e989cb-c3b7-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "artists/add-artist",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyMzk4MDEsImV4cCI6MTczNTMyNjIwMX0.HpYoR0SDDz0_396x1IFbDUtuMXacdl3NnrSvVwMJ4y4",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"abc1\",\n    \"grammy\": 2,\n    \"hidden\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/artists/add-artist",
+					"host": ["{{baseUrl}}"],
+					"path": ["artists", "add-artist"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "artists/getAll",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDAyODMsImV4cCI6MTczNTMyNjY4M30.5uYbXz4EDl2adFTlpwDeUJsy6ikx0x4C8rSVfkCqp84",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/artists/getAll",
+					"host": ["{{baseUrl}}"],
+					"path": ["artists", "getAll"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "artists/delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDAyODMsImV4cCI6MTczNTMyNjY4M30.5uYbXz4EDl2adFTlpwDeUJsy6ikx0x4C8rSVfkCqp84",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/artists/23c9ce5d-c3bc-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["artists", "23c9ce5d-c3bc-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "artists/get",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDAyODMsImV4cCI6MTczNTMyNjY4M30.5uYbXz4EDl2adFTlpwDeUJsy6ikx0x4C8rSVfkCqp84",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/artists/1e5e1945-c3bc-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["artists", "1e5e1945-c3bc-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "albums/get",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDAyODMsImV4cCI6MTczNTMyNjY4M30.5uYbXz4EDl2adFTlpwDeUJsy6ikx0x4C8rSVfkCqp84",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/albums/9fef974e-c3c2-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["albums", "9fef974e-c3c2-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "albums/delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDAyODMsImV4cCI6MTczNTMyNjY4M30.5uYbXz4EDl2adFTlpwDeUJsy6ikx0x4C8rSVfkCqp84",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/albums/9fef974e-c3c2-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["albums", "9fef974e-c3c2-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "albums/add-album",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDAyODMsImV4cCI6MTczNTMyNjY4M30.5uYbXz4EDl2adFTlpwDeUJsy6ikx0x4C8rSVfkCqp84",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"abc1\",\n    \"year\": 2024,\n    \"artistId\": \"1e5e1945-c3bc-11ef-9820-0242ac120003\",\n    \"hidden\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/albums/add-album",
+					"host": ["{{baseUrl}}"],
+					"path": ["albums", "add-album"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "albums/update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDAyODMsImV4cCI6MTczNTMyNjY4M30.5uYbXz4EDl2adFTlpwDeUJsy6ikx0x4C8rSVfkCqp84",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"year\": 2023\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/albums/a608015a-c3c2-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["albums", "a608015a-c3c2-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "albums/getAll",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDAyODMsImV4cCI6MTczNTMyNjY4M30.5uYbXz4EDl2adFTlpwDeUJsy6ikx0x4C8rSVfkCqp84",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/albums/getAll",
+					"host": ["{{baseUrl}}"],
+					"path": ["albums", "getAll"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tracks/add-track",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDM2MDAsImV4cCI6MTczNTMzMDAwMH0.Z3heNkKkdTJcEO53Rjvlq9vlvzd5s0CVUOSuqIPrjP0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"albumtrack1\",\n    \"duration\": 5,\n    \"albumId\": \"a608015a-c3c2-11ef-9820-0242ac120003\",\n    \"artistId\": \"1e5e1945-c3bc-11ef-9820-0242ac120003\",\n    \"hidden\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tracks/add-track",
+					"host": ["{{baseUrl}}"],
+					"path": ["tracks", "add-track"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tracks/getAll",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDM2MDAsImV4cCI6MTczNTMzMDAwMH0.Z3heNkKkdTJcEO53Rjvlq9vlvzd5s0CVUOSuqIPrjP0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tracks/getAll",
+					"host": ["{{baseUrl}}"],
+					"path": ["tracks", "getAll"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tracks/get",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDM2MDAsImV4cCI6MTczNTMzMDAwMH0.Z3heNkKkdTJcEO53Rjvlq9vlvzd5s0CVUOSuqIPrjP0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tracks/207cb8ce-c3c5-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["tracks", "207cb8ce-c3c5-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tracks/update",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDM2MDAsImV4cCI6MTczNTMzMDAwMH0.Z3heNkKkdTJcEO53Rjvlq9vlvzd5s0CVUOSuqIPrjP0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"duration\": 10\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tracks/207cb8ce-c3c5-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["tracks", "207cb8ce-c3c5-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "tracks/delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDM2MDAsImV4cCI6MTczNTMzMDAwMH0.Z3heNkKkdTJcEO53Rjvlq9vlvzd5s0CVUOSuqIPrjP0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/tracks/207cb8ce-c3c5-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["tracks", "207cb8ce-c3c5-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites/add-favorite",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDM2MDAsImV4cCI6MTczNTMzMDAwMH0.Z3heNkKkdTJcEO53Rjvlq9vlvzd5s0CVUOSuqIPrjP0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"category\": \"track\",\n    \"itemId\": \"2bce2cca-c3c5-11ef-9820-0242ac120003\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/favorites/add-favorite",
+					"host": ["{{baseUrl}}"],
+					"path": ["favorites", "add-favorite"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites/category",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDM2MDAsImV4cCI6MTczNTMzMDAwMH0.Z3heNkKkdTJcEO53Rjvlq9vlvzd5s0CVUOSuqIPrjP0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/favorites/track",
+					"host": ["{{baseUrl}}"],
+					"path": ["favorites", "track"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "favorites/delete",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxM2I1MzZlYy1jM2IyLTExZWYtOTgyMC0wMjQyYWMxMjAwMDMiLCJlbWFpbCI6ImFkbWluQHh5ei5jb20iLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3MzUyNDM2MDAsImV4cCI6MTczNTMzMDAwMH0.Z3heNkKkdTJcEO53Rjvlq9vlvzd5s0CVUOSuqIPrjP0",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/favorites/3c5f4d7f-c3c6-11ef-9820-0242ac120003",
+					"host": ["{{baseUrl}}"],
+					"path": ["favorites", "3c5f4d7f-c3c6-11ef-9820-0242ac120003"]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [""]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [""]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:4000/api/v1",
+			"type": "string"
+		}
+	]
+}
