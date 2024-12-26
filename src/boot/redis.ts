@@ -5,7 +5,7 @@ class Redis {
 	public static client: RedisClientType;
 
 	public static init = async (): Promise<void> => {
-		Redis.client = createClient(REDIS_CONFIG);
+		Redis.client = createClient(process.env.REDIS_URL ? { url: process.env.REDIS_URL } : REDIS_CONFIG);
 		await Redis.client.connect();
 		await Redis.client.select(REDIS_CONFIG.db);
 	};
