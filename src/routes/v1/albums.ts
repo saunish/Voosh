@@ -48,9 +48,9 @@ const routeConfig = [
 			checkAbility('update', 'Album'),
 			requestValidatorInstance.validate(
 				Joi.object({
-					name: Joi.string().required(),
-					year: Joi.number().required(),
-					hidden: Joi.boolean().required(),
+					name: Joi.string(),
+					year: Joi.number(),
+					hidden: Joi.boolean(),
 				}).required(),
 			),
 		],

@@ -4,12 +4,11 @@ import { AppError, generateToken, hasValue } from '../../utils/index.js';
 import { logger } from '../../utils/logger.js';
 import jwt from 'jsonwebtoken';
 import { setCache } from '../../utils/redis-helper.js';
-import { CreateHttpResponseInterface } from '../../utils/create-http-response.js';
 
 class AuthService {
 	private usersDAO = new UsersDAO();
 
-	public async createUser(userData: UserInterface): Promise<Partial<UserInterface> | CreateHttpResponseInterface> {
+	public async createUser(userData: UserInterface): Promise<string | void> {
 		const className = AuthService.name;
 		const functionName = this.createUser.name;
 		try {
@@ -23,7 +22,7 @@ class AuthService {
 				password: hashedPassword,
 				role: 'admin',
 			};
-			return Promise.resolve(await this.usersDAO.createUser(user));
+			return await this.usersDAO.createUser(user);
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'createUser catch error', error, className });
 			throw error;

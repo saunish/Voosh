@@ -22,15 +22,11 @@ type UserInterface = {
 class UsersDAO {
 	private readonly defaultExcludedFields: (keyof UserInterface)[] = ['password', 'parentId'];
 
-	public async createUser(
-		userData: UserInterface,
-		includedFields: (keyof UserInterface)[] | null = null,
-		excludedFields: (keyof UserInterface)[] | null = null,
-	): Promise<Partial<UserInterface>> {
+	public async createUser(userData: UserInterface): Promise<string> {
 		const className = UsersDAO.name;
 		const functionName = this.createUser.name;
 		try {
-			const [insertId] = await KnexClient.mysqlClient<UserInterface>(tableName).insert({
+			const [_insertId] = await KnexClient.mysqlClient<UserInterface>(tableName).insert({
 				userId: userData.userId,
 				email: userData.email,
 				password: userData.password,
@@ -40,14 +36,7 @@ class UsersDAO {
 				updatedDate: new Date(),
 			});
 
-			const selectFields: string[] = getSelectFields(ALL_FIELDS, this.defaultExcludedFields, includedFields, excludedFields);
-
-			const createdUser: UserInterface = (await KnexClient.mysqlClient<UserInterface>(tableName)
-				.select(selectFields)
-				.where('userId', insertId)
-				.first()) as unknown as UserInterface;
-
-			return createdUser;
+			return 'user created successfully';
 		} catch (error) {
 			logger.error({ className, functionName, message: 'Error creating user', error });
 			throw new AppError('Error creating user', 500, error);
@@ -101,7 +90,7 @@ class UsersDAO {
 		const functionName = this.getAllUsersByParentId.name;
 		try {
 			const selectFields: string[] = getSelectFields(ALL_FIELDS, this.defaultExcludedFields, includedFields, excludedFields);
-			let query = KnexClient.mysqlClient<UserInterface>(tableName).select(selectFields).where('parentId', parentId).orderBy('createdDate', 'asc');
+			let query = KnexClient.mysqlClient<UserInterface>(tableName).select(selectFields).where({ parentId }).orderBy('createdDate', 'asc');
 			if (limit !== null) {
 				query = query.limit(limit);
 			}
@@ -109,6 +98,7 @@ class UsersDAO {
 				query = query.offset(offset);
 			}
 			const users = await query;
+
 			return users;
 		} catch (error) {
 			logger.error({ className, functionName, message: 'Error getting all users by parentId', error });

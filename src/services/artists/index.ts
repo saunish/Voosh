@@ -21,6 +21,22 @@ class ArtistsService {
 		}
 	}
 
+	public async getArtistById(artistId: string): Promise<ArtistInterface | null> {
+		const className = ArtistsService.name;
+		const functionName = this.getArtistById.name;
+		try {
+			const artist = await this.artistsDAO.getArtistById(artistId);
+			if (hasValue(artist)) {
+				return artist as ArtistInterface;
+			} else {
+				throw new AppError('Artist not found', 404);
+			}
+		} catch (error: unknown) {
+			logger.error({ functionName, message: 'getArtistById catch error', error, className });
+			throw error;
+		}
+	}
+
 	public async addArtist(body: ArtistInterface): Promise<unknown> {
 		const className = ArtistsService.name;
 		const functionName = this.addArtist.name;

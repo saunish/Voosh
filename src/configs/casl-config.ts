@@ -11,7 +11,7 @@ export function defineAbilityFor(role: string): AppAbility {
 	if (role === 'admin') {
 		can('manage', 'all'); // Admin can perform any action on any resource
 	} else if (role === 'editor') {
-		can(['create', 'read', 'update', 'delete'], ['Artist', 'Album', 'Track']);
+		can(['create', 'read', 'update', 'delete'], ['Artist', 'Album', 'Track', 'User']);
 		cannot('delete', 'User'); // Editors cannot delete users
 	} else if (role === 'viewer') {
 		can('read', ['Artist', 'Album', 'Track']);

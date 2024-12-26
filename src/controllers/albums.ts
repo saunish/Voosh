@@ -12,7 +12,7 @@ class AlbumsController {
 		try {
 			const payload = {
 				limit: Number(req.query.limit) || 5,
-				offset: Number(req.query.offset) || 5,
+				offset: Number(req.query.offset) || 0,
 				filters: {
 					year: req.query.year ? Number(req.query.year) : undefined,
 					hidden: req.query.hidden ? req.query.hidden === 'true' : undefined,

@@ -12,7 +12,7 @@ class ArtistsController {
 		try {
 			const payload = {
 				limit: Number(req.query.limit) || 5,
-				offset: Number(req.query.offset) || 5,
+				offset: Number(req.query.offset) || 0,
 				filters: {
 					grammy: req.query.grammy ? Number(req.query.grammy) : undefined,
 					hidden: req.query.hidden ? req.query.hidden === 'true' : undefined,
@@ -22,6 +22,21 @@ class ArtistsController {
 			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: artists, message: 'artists fetched successfully', error: null });
 		} catch (error) {
 			logger.error({ functionName, message: 'getAllArtists catch error', error, className });
+			return next(error);
+		}
+	};
+
+	public getArtist = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+		const className = ArtistsController.name;
+		const functionName = this.getArtist.name;
+		try {
+			const album = await this.artistsServices.getArtistById(req.params.artistId);
+			if (!album) {
+				return res.status(STATUS_CODE.NOT_FOUND).json({ status: STATUS_CODE.NOT_FOUND, data: null, message: 'Artist not found', error: null });
+			}
+			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: album, message: 'artist fetched successfully', error: null });
+		} catch (error) {
+			logger.error({ functionName, message: 'getArtist catch error', error, className });
 			return next(error);
 		}
 	};

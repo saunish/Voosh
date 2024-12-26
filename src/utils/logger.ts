@@ -53,8 +53,7 @@ const winstonTransports = [new transports.Console()];
 const winstonLogger = createLogger({
 	level: level(),
 	levels,
-	//	format: winstonFormat,
-	format: format.combine(format.json(), format.prettyPrint()),
+	format: winstonFormat,
 	transports: winstonTransports,
 });
 

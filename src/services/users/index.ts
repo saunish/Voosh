@@ -6,11 +6,11 @@ import { logger } from '../../utils/logger.js';
 class UsersService {
 	private usersDAO = new UsersDAO();
 
-	public async getAllUsers(body: { userId: string; limit: number; offset: number }): Promise<unknown> {
+	public async getAllUsers(body: { parentId: string; limit: number; offset: number }): Promise<unknown> {
 		const className = UsersService.name;
 		const functionName = this.getAllUsers.name;
 		try {
-			const users = await this.usersDAO.getAllUsersByParentId(body.userId, null, null, Number(body.limit), Number(body.offset));
+			const users = await this.usersDAO.getAllUsersByParentId(body.parentId, null, null, Number(body.limit), Number(body.offset));
 			if (hasValue(users)) {
 				return users;
 			} else {
@@ -22,7 +22,7 @@ class UsersService {
 		}
 	}
 
-	public async addUser(body: UserInterface): Promise<unknown> {
+	public async addUser(body: UserInterface & { parent: { userId: string } }): Promise<unknown> {
 		const className = UsersService.name;
 		const functionName = this.addUser.name;
 		try {
@@ -35,14 +35,10 @@ class UsersService {
 				...body,
 				password: hashedPassword,
 				role: body.role,
+				parentId: body.parent.userId,
 			};
 
-			const user = await this.usersDAO.createUser(newUser);
-			if (hasValue(user)) {
-				return user;
-			} else {
-				throw new AppError('User not added', 409);
-			}
+			return await this.usersDAO.createUser(newUser);
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'addUser catch error', error, className });
 			throw error;

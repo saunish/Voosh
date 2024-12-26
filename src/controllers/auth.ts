@@ -15,7 +15,7 @@ class AuthController {
 			if (!hasValue(createUser)) {
 				throw next(createUser);
 			}
-			return res.status(STATUS_CODE.SUCCESS).json(createHttpResponse({ status: STATUS_CODE.SUCCESS, message: 'User created successfully', data: createUser }));
+			return res.status(STATUS_CODE.SUCCESS).json(createHttpResponse({ status: STATUS_CODE.SUCCESS, message: 'User created successfully', data: null }));
 		} catch (error) {
 			logger.error({ functionName, message: 'signup catch error', error, className });
 			return next(error);

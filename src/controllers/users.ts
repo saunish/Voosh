@@ -12,8 +12,8 @@ class UsersController {
 		try {
 			const payload = {
 				limit: Number(req.query.limit) || 5,
-				offset: Number(req.query.offset) || 5,
-				userId: req.user?.userId as string,
+				offset: Number(req.query.offset) || 0,
+				parentId: req.user?.userId as string,
 			};
 			const users = await this.usersServices.getAllUsers(payload);
 			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: users, message: 'users fetched successfully', error: null });
@@ -27,8 +27,12 @@ class UsersController {
 		const className = UsersController.name;
 		const functionName = this.addUser.name;
 		try {
-			const user = await this.usersServices.addUser(req.body);
-			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: user, message: 'user added successfully', error: null });
+			const payload = {
+				parent: req.user,
+				...req.body,
+			};
+			await this.usersServices.addUser(payload);
+			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: null, message: 'user added successfully', error: null });
 		} catch (error) {
 			logger.error({ functionName, message: 'addUser catch error', error, className });
 			return next(error);
@@ -39,8 +43,8 @@ class UsersController {
 		const className = UsersController.name;
 		const functionName = this.deleteUser.name;
 		try {
-			const user = await this.usersServices.deleteUser(req.params.userId);
-			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: user, message: 'user deleted successfully', error: null });
+			await this.usersServices.deleteUser(req.params.userId);
+			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: null, message: 'user deleted successfully', error: null });
 		} catch (error) {
 			logger.error({ functionName, message: 'deleteUser catch error', error, className });
 			return next(error);
@@ -56,8 +60,8 @@ class UsersController {
 				...req.user,
 				token: req.header('authorization')?.replace('Bearer ', '') as string,
 			};
-			const user = await this.usersServices.updatePassword(payload);
-			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: user, message: 'user password updated successfully', error: null });
+			await this.usersServices.updatePassword(payload);
+			return res.status(STATUS_CODE.SUCCESS).json({ status: STATUS_CODE.SUCCESS, data: null, message: 'user password updated successfully', error: null });
 		} catch (error) {
 			logger.error({ functionName, message: 'user password update catch error', error, className });
 			return next(error);

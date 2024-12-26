@@ -12,6 +12,12 @@ const routeConfig = [
 		controller: artistsController.getAllArtists,
 	},
 	{
+		path: ':artistId',
+		method: 'get',
+		middlewares: [authValidatorInstance.validate(), checkAbility('read', 'Artist')],
+		controller: artistsController.getArtist,
+	},
+	{
 		path: 'add-artist',
 		method: 'post',
 		middlewares: [
@@ -41,9 +47,9 @@ const routeConfig = [
 			checkAbility('update', 'Artist'),
 			requestValidatorInstance.validate(
 				Joi.object({
-					name: Joi.string().required(),
-					grammy: Joi.number().required(),
-					hidden: Joi.boolean().required(),
+					name: Joi.string(),
+					grammy: Joi.number(),
+					hidden: Joi.boolean(),
 				}).required(),
 			),
 		],

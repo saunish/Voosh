@@ -79,6 +79,24 @@ class AlbumsDAO {
 		}
 	}
 
+	public async getAlbumsByArtistId(
+		artistId: string,
+		includedFields: (keyof AlbumInterface)[] | null = null,
+		excludedFields: (keyof AlbumInterface)[] | null = null,
+		ignoreExcludedFields = false,
+	): Promise<Partial<AlbumInterface>[]> {
+		const className = AlbumsDAO.name;
+		const functionName = this.getAlbumsByArtistId.name;
+		try {
+			const selectFields: string[] = getSelectFields(ALL_FIELDS, ignoreExcludedFields ? [] : this.defaultExcludedFields, includedFields, excludedFields);
+			const albums = (await KnexClient.mysqlClient<AlbumInterface>(tableName).select(selectFields).where({ artistId })) as unknown as AlbumInterface[];
+			return albums;
+		} catch (error) {
+			logger.error({ className, functionName, message: 'Error getting albums by artist ID', error });
+			throw new AppError('Error getting albums by artist ID', 500, error);
+		}
+	}
+
 	public async updateAlbumById(albumUpdateDetails: Partial<AlbumInterface>, albumId: string): Promise<Partial<AlbumInterface>> {
 		const className = AlbumsDAO.name;
 		const functionName = this.updateAlbumById.name;
@@ -108,7 +126,7 @@ class AlbumsDAO {
 		includedFields: (keyof AlbumInterface)[] | null = null,
 		excludedFields: (keyof AlbumInterface)[] | null = null,
 		limit: number | null = 5,
-		offset: number | null = 5,
+		offset: number | null = 0,
 	) {
 		const className = AlbumsDAO.name;
 		const functionName = this.getAllAlbums.name;
