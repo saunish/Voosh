@@ -5,14 +5,11 @@ export function getSelectFields<TFields extends string | number | symbol>(
 	excludedFields: TFields[] | null = null,
 ): TFields[] {
 	let fields = [...allFields];
-
 	const exclusions = excludedFields || defaultExcludedFields;
 	fields = fields.filter((field) => !exclusions.includes(field));
-
 	if (includedFields) {
 		fields = fields.filter((field) => includedFields.includes(field));
 	}
-
 	return fields;
 }
 
@@ -25,4 +22,16 @@ export function hasValue<T>(value: T | null | undefined): value is NonNullable<T
 	if (Array.isArray(value) && value.length === 0) return false;
 	if (typeof value === 'object' && value !== null && Object.keys(value).length === 0) return false;
 	return true;
+}
+
+export class AppError extends Error {
+	public readonly status: number;
+	public readonly details?: unknown;
+
+	constructor(message: string, status: number, details?: unknown) {
+		super(message);
+		this.status = status;
+		this.details = details;
+		Error.captureStackTrace(this, this.constructor);
+	}
 }

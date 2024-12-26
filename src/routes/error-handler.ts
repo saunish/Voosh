@@ -18,7 +18,7 @@ class ErrorHandler {
 		const className = ErrorHandler.name;
 		const functionName = this.errorHandler.name;
 		try {
-			const { status, data, message, error } = httpError;
+			const { status, data = null, message, error = null } = httpError;
 			if (status && message) {
 				return res.status(status).json({ status, data, message, error });
 			} else {

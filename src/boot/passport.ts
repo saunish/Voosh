@@ -1,7 +1,7 @@
 import passport from 'passport';
 import { ExtractJwt, Strategy as JwtStrategy, VerifiedCallback } from 'passport-jwt';
 import { UsersDAO } from '../data-access-layer/mysql/users.js';
-import { hasValue, safePromise } from '../utils/helpers.js';
+import { hasValue, safePromise } from '../utils/common-helpers.js';
 import { logger } from '../utils/logger.js';
 import { createHttpResponse } from '../utils/create-http-response.js';
 import { AppAbility } from '../configs/casl-config.js';
@@ -31,7 +31,6 @@ class PassportLoader {
 				async (req, jwtPayload: { userId: string }, done: VerifiedCallback) => {
 					try {
 						const checkTokenValidity = await getCache(req.header('authorization')?.replace('Bearer ', '') as string);
-						console.log(JSON.parse(checkTokenValidity as string));
 						if (JSON.parse(checkTokenValidity as string) === 'blacklisted') {
 							return done(null, false, createHttpResponse({ status: 401, message: 'Unauthorized' }));
 						}

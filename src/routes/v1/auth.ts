@@ -1,5 +1,5 @@
 import { AuthController } from '../../controllers/index.js';
-import { authValidatorInstance, checkAbility, requestValidatorInstance } from '../../utils/index.js';
+import { authValidatorInstance, requestValidatorInstance } from '../../utils/index.js';
 import Joi from 'joi';
 
 const authController = new AuthController();

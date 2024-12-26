@@ -1,6 +1,6 @@
-import { hasValue } from './helpers.js';
+import { hasValue } from './common-helpers.js';
 
-interface CreateHttpResponseInterface {
+export interface CreateHttpResponseInterface {
 	status: number;
 	message: string;
 	data?: unknown;

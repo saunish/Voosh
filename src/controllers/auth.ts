@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { logger } from '../utils/index.js';
+import { AppError, hasValue, logger } from '../utils/index.js';
 import { AuthService } from '../services/auth/index.js';
+import { createHttpResponse } from '../utils/create-http-response.js';
+import { RESPONSE_MESSAGE, STATUS_CODE } from '../configs/response-codes.js';
 
 class AuthController {
 	private authServices = new AuthService();
@@ -10,10 +12,10 @@ class AuthController {
 		const functionName = this.signup.name;
 		try {
 			const createUser = await this.authServices.createUser(req.body);
-			if (!createUser) {
-				return res.status(400).json({ status: 400, data: null, message: 'signup failed', error: null });
+			if (!hasValue(createUser)) {
+				throw next(createUser);
 			}
-			return res.status(200).json({ status: 201, data: null, message: 'signup successful', error: null });
+			return res.status(STATUS_CODE.SUCCESS).json(createHttpResponse({ status: STATUS_CODE.SUCCESS, message: 'User created successfully', data: createUser }));
 		} catch (error) {
 			logger.error({ functionName, message: 'signup catch error', error, className });
 			return next(error);
@@ -26,11 +28,11 @@ class AuthController {
 		try {
 			const loginUser = await this.authServices.login(req.body);
 			if (!loginUser) {
-				return res.status(400).json({ status: 400, data: null, message: 'login failed', error: null });
+				throw next(loginUser);
 			}
-			return res.status(200).json(loginUser);
+			return res.status(STATUS_CODE.SUCCESS).json(createHttpResponse({ status: STATUS_CODE.SUCCESS, message: 'User logged in successfully', data: { token: loginUser } }));
 		} catch (error) {
-			logger.error({ functionName, message: 'login catch error', error, className });
+			logger.error({ functionName, message: 'signin catch error', error, className });
 			return next(error);
 		}
 	};
@@ -39,12 +41,11 @@ class AuthController {
 		const className = AuthController.name;
 		const functionName = this.logout.name;
 		try {
-			console.log(req.header('authorization')?.replace('Bearer ', ''));
 			const loginUserOut = await this.authServices.logout(req.header('authorization')?.replace('Bearer ', '') as string);
 			if (!loginUserOut) {
-				return res.status(400).json({ status: 400, data: null, message: 'logout failed', error: null });
+				throw new AppError(RESPONSE_MESSAGE.BAD_REQUEST, STATUS_CODE.BAD_REQUEST);
 			}
-			return res.status(200).json(loginUserOut);
+			return res.status(STATUS_CODE.SUCCESS).json(createHttpResponse({ status: STATUS_CODE.SUCCESS, message: 'User logged out successfully', data: null }));
 		} catch (error) {
 			logger.error({ functionName, message: 'logout catch error', error, className });
 			return next(error);

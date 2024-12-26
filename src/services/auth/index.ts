@@ -1,22 +1,21 @@
 import { UsersDAO, UserInterface } from '../../data-access-layer/mysql/users.js';
 import { BcryptHelper } from '../../utils/bcrypt-helper.js';
-import { createHttpResponse, generateToken, hasValue, safePromise } from '../../utils/index.js';
+import { AppError, generateToken, hasValue } from '../../utils/index.js';
 import { logger } from '../../utils/logger.js';
 import jwt from 'jsonwebtoken';
 import { setCache } from '../../utils/redis-helper.js';
+import { CreateHttpResponseInterface } from '../../utils/create-http-response.js';
 
 class AuthService {
 	private usersDAO = new UsersDAO();
 
-	public async createUser(userData: UserInterface): Promise<unknown> {
+	public async createUser(userData: UserInterface): Promise<Partial<UserInterface> | CreateHttpResponseInterface> {
 		const className = AuthService.name;
 		const functionName = this.createUser.name;
 		try {
-			const [errorVerifyUser, verifyUser] = await safePromise(this.usersDAO.getUserByEmail(userData.email));
-			if (hasValue(errorVerifyUser)) {
-				return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request` }));
-			} else if (hasValue(verifyUser)) {
-				return Promise.reject(createHttpResponse({ status: 409, message: `Email already exists.` }));
+			const verifyUser = await this.usersDAO.getUserByEmail(userData.email);
+			if (hasValue(verifyUser)) {
+				throw new AppError('Email already exists.', 409);
 			}
 			const hashedPassword: string = await BcryptHelper.hashPassword(userData.password);
 			const user = {
@@ -24,12 +23,7 @@ class AuthService {
 				password: hashedPassword,
 				role: 'admin',
 			};
-			const createdUser = await safePromise(this.usersDAO.createUser(user));
-			if (hasValue(createdUser)) {
-				return createHttpResponse({ status: 201, message: 'User created successfully' });
-			} else {
-				return createHttpResponse({ status: 500, message: 'Internal Server Error' });
-			}
+			return Promise.resolve(await this.usersDAO.createUser(user));
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'createUser catch error', error, className });
 			throw error;
@@ -40,27 +34,19 @@ class AuthService {
 		const className = AuthService.name;
 		const functionName = this.login.name;
 		try {
-			console.log(userData);
-			const [errorVerifyUser, verifyUser] = await safePromise(this.usersDAO.getUserByEmail(userData.email, null, null, true));
-			if (hasValue(errorVerifyUser)) {
-				return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request` }));
-			} else if (hasValue(verifyUser)) {
-				if (verifyUser.password) {
-					const verifyPassword = await BcryptHelper.comparePassword(userData.password, verifyUser.password);
-					if (!verifyPassword) return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request, Reason: invalid password` }));
-					else {
-						const payload = { userId: verifyUser.userId, email: verifyUser.email, role: verifyUser.role };
-						const token = generateToken(payload);
-						return createHttpResponse({ status: 200, message: 'User logged in successfully', data: { token } });
-					}
-				} else {
-					return Promise.reject(createHttpResponse({ status: 400, message: `User not found.` }));
-				}
+			const verifyUser = (await this.usersDAO.getUserByEmail(userData.email, null, null, true)) as UserInterface;
+			if (!hasValue(verifyUser)) {
+				throw new AppError('User not found.', 409);
+			}
+			const verifyPassword = await BcryptHelper.comparePassword(userData.password, verifyUser.password);
+			if (!verifyPassword) {
+				throw new AppError('Bad Request, Invalid password.', 409);
 			} else {
-				return Promise.reject(createHttpResponse({ status: 409, message: `User not found.` }));
+				const payload = { userId: verifyUser.userId, email: verifyUser.email, role: verifyUser.role };
+				return Promise.resolve(generateToken(payload));
 			}
 		} catch (error: unknown) {
-			logger.error({ functionName, message: 'createUser catch error', error, className });
+			logger.error({ functionName, message: 'login catch error', error, className });
 			throw error;
 		}
 	}
@@ -74,7 +60,7 @@ class AuthService {
 			if (expiry > 0) {
 				await setCache(token, 'blacklisted', expiry);
 			}
-			return createHttpResponse({ status: 200, message: 'User logged out successfully' });
+			return { status: 200, data: null, message: 'User logged out successfully', error: null };
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'logout catch error', error, className });
 			throw error;

@@ -3,6 +3,19 @@ import { createHttpResponse, logger } from './index.js';
 import { UserInterface } from '../data-access-layer/mysql/users.js';
 import passport from 'passport';
 import { defineAbilityFor } from '../configs/casl-config.js';
+import { RESPONSE_MESSAGE, STATUS_CODE } from '../configs/response-codes.js';
+
+export interface User {
+	userId: string;
+	email: string;
+	role: string;
+}
+
+declare module 'express-serve-static-core' {
+	interface Request {
+		user?: User;
+	}
+}
 
 class AuthValidator {
 	public validate = (): RequestHandler => {
@@ -12,14 +25,18 @@ class AuthValidator {
 		return (req: Request, res: Response, next: NextFunction): void => {
 			passport.authenticate('JwtStrategy', { session: false }, (err: Error, user: UserInterface & { ability: unknown }, info: { message?: string }) => {
 				if (err) {
-					return res.status(500).json(createHttpResponse({ status: 500, message: 'Internal Server Error' }));
+					return next(err);
 				}
 				if (!user) {
 					logger.error({ functionName, message: 'Unauthorized Access', className, error: info ?? err });
-					return res.status(401).json(createHttpResponse({ status: 401, message: info?.message ?? 'Unauthorized Access' }));
+					return res.status(STATUS_CODE.UNAUTHORIZED).json(createHttpResponse({ status: STATUS_CODE.UNAUTHORIZED, message: info?.message ?? RESPONSE_MESSAGE.UNAUTHORIZED }));
 				}
 				req.ability = defineAbilityFor(user.role as string);
-				req.user = user;
+				req.user = {
+					userId: user.userId,
+					email: user.email,
+					role: user.role,
+				};
 				next();
 			})(req, res, next);
 		};

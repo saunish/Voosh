@@ -1,22 +1,20 @@
 import { UserInterface, UsersDAO } from '../../data-access-layer/mysql/users.js';
 import { BcryptHelper } from '../../utils/bcrypt-helper.js';
-import { createHttpResponse, hasValue, safePromise } from '../../utils/index.js';
+import { AppError, hasValue } from '../../utils/index.js';
 import { logger } from '../../utils/logger.js';
 
 class UsersService {
 	private usersDAO = new UsersDAO();
 
-	public async getAllUsers(body: { userId: string }): Promise<unknown> {
+	public async getAllUsers(body: { userId: string; limit: number; offset: number }): Promise<unknown> {
 		const className = UsersService.name;
 		const functionName = this.getAllUsers.name;
 		try {
-			const [error, users] = await safePromise(this.usersDAO.getAllUsersByParentId(body.userId));
-			if (hasValue(error)) {
-				return Promise.reject(createHttpResponse({ status: 500, message: 'Internal Server Error' }));
-			} else if (hasValue(users)) {
-				return createHttpResponse({ status: 200, message: 'All users', data: users });
+			const users = await this.usersDAO.getAllUsersByParentId(body.userId, null, null, Number(body.limit), Number(body.offset));
+			if (hasValue(users)) {
+				return users;
 			} else {
-				return createHttpResponse({ status: 404, message: 'No users found' });
+				throw new AppError('No users found', 404);
 			}
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'getAllUsers catch error', error, className });
@@ -28,11 +26,9 @@ class UsersService {
 		const className = UsersService.name;
 		const functionName = this.addUser.name;
 		try {
-			const [errorVerifyUser, verifyUser] = await safePromise(this.usersDAO.getUserByEmail(body.email));
-			if (hasValue(errorVerifyUser)) {
-				return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request` }));
-			} else if (hasValue(verifyUser)) {
-				return Promise.reject(createHttpResponse({ status: 409, message: `Email already exists.` }));
+			const verifyUser = await this.usersDAO.getUserByEmail(body.email);
+			if (hasValue(verifyUser)) {
+				throw new AppError('Email already exists.', 409);
 			}
 			const hashedPassword: string = await BcryptHelper.hashPassword(body.password);
 			const newUser = {
@@ -41,13 +37,11 @@ class UsersService {
 				role: body.role,
 			};
 
-			const [error, user] = await safePromise(this.usersDAO.createUser(newUser));
-			if (hasValue(error)) {
-				return Promise.reject(createHttpResponse({ status: 500, message: 'Internal Server Error' }));
-			} else if (hasValue(user)) {
-				return createHttpResponse({ status: 200, message: 'User added', data: user });
+			const user = await this.usersDAO.createUser(newUser);
+			if (hasValue(user)) {
+				return user;
 			} else {
-				return createHttpResponse({ status: 409, message: 'User not added' });
+				throw new AppError('User not added', 409);
 			}
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'addUser catch error', error, className });
@@ -59,23 +53,18 @@ class UsersService {
 		const className = UsersService.name;
 		const functionName = this.deleteUser.name;
 		try {
-			const [errorVerifyUser, verifyUser] = await safePromise(this.usersDAO.getUserById(userId));
-			if (hasValue(errorVerifyUser)) {
-				return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request` }));
-			} else if (!hasValue(verifyUser)) {
-				return Promise.reject(createHttpResponse({ status: 409, message: `no such id exist` }));
+			const verifyUser = await this.usersDAO.getUserById(userId);
+			if (!hasValue(verifyUser)) {
+				throw new AppError('no such id exist', 409);
 			} else {
 				if (verifyUser.role === 'admin') {
-					return Promise.reject(createHttpResponse({ status: 409, message: `You can't delete an admin` }));
+					throw new AppError(`You can't delete an admin`, 409);
 				}
-
-				const [error, user] = await safePromise(this.usersDAO.deleteUser(userId));
-				if (hasValue(error)) {
-					return Promise.reject(createHttpResponse({ status: 500, message: 'Internal Server Error' }));
-				} else if (hasValue(user)) {
-					return createHttpResponse({ status: 200, message: 'User deleted', data: user });
+				const user = await this.usersDAO.deleteUser(userId);
+				if (hasValue(user)) {
+					return user;
 				} else {
-					return createHttpResponse({ status: 404, message: 'User not found' });
+					throw new AppError('User not found', 404);
 				}
 			}
 		} catch (error: unknown) {
@@ -88,29 +77,26 @@ class UsersService {
 		const className = UsersService.name;
 		const functionName = this.updatePassword.name;
 		try {
-			const [errorVerifyUser, verifyUser] = await safePromise(this.usersDAO.getUserByEmail(body.email, null, null, true));
-			if (hasValue(errorVerifyUser)) {
-				return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request` }));
-			} else if (hasValue(verifyUser)) {
+			const verifyUser = await this.usersDAO.getUserByEmail(body.email, null, null, true);
+			if (hasValue(verifyUser)) {
 				if (verifyUser.password) {
 					const verifyPassword = await BcryptHelper.comparePassword(body.oldPassword, verifyUser.password);
-					if (!verifyPassword) return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request, Reason: invalid password` }));
-					else {
+					if (!verifyPassword) {
+						throw new AppError('Bad Request, Reason: invalid password', 409);
+					} else {
 						const hashedPassword: string = await BcryptHelper.hashPassword(body.newPassword);
-						const [error, user] = await safePromise(this.usersDAO.updateUserById({ password: hashedPassword }, body.userId));
-						if (hasValue(error)) {
-							return Promise.reject(createHttpResponse({ status: 500, message: 'Internal Server Error' }));
-						} else if (hasValue(user)) {
-							return createHttpResponse({ status: 200, message: 'Password updated', data: user });
+						const user = await this.usersDAO.updateUserById({ password: hashedPassword }, body.userId);
+						if (hasValue(user)) {
+							return user;
 						} else {
-							return createHttpResponse({ status: 404, message: 'User not found' });
+							throw new AppError('User not found', 404);
 						}
 					}
 				} else {
-					return Promise.reject(createHttpResponse({ status: 400, message: `User not found.` }));
+					throw new AppError('User not found', 404);
 				}
 			} else {
-				return Promise.reject(createHttpResponse({ status: 409, message: `User not found.` }));
+				throw new AppError('User not found', 404);
 			}
 		} catch (error: unknown) {
 			logger.error({ functionName, message: 'updatePassword catch error', error, className });
