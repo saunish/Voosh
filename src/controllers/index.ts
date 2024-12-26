@@ -1,1 +1,2 @@
-export { UserController } from './user.js';
+export { AuthController } from './auth.js';
+export { UsersController } from './users.js';

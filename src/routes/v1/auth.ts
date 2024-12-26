@@ -1,8 +1,8 @@
-import { UserController } from '../../controllers/index.js';
+import { AuthController } from '../../controllers/index.js';
 import { authValidatorInstance, checkAbility, requestValidatorInstance } from '../../utils/index.js';
 import Joi from 'joi';
 
-const userController = new UserController();
+const authController = new AuthController();
 
 const routeConfig = [
 	{
@@ -16,7 +16,7 @@ const routeConfig = [
 				}).required(),
 			),
 		],
-		controller: userController.signup,
+		controller: authController.signup,
 	},
 	{
 		path: 'login',
@@ -29,19 +29,13 @@ const routeConfig = [
 				}).required(),
 			),
 		],
-		controller: userController.signin,
+		controller: authController.signin,
 	},
 	{
 		path: 'logout',
 		method: 'get',
 		middlewares: [authValidatorInstance.validate()],
-		controller: userController.logout,
-	},
-	{
-		path: 'getAllUsers',
-		method: 'get',
-		middlewares: [authValidatorInstance.validate(), checkAbility('read', 'User')],
-		controller: userController.getAllUsers,
+		controller: authController.logout,
 	},
 ];
 

@@ -94,6 +94,16 @@ class UsersDAO {
 			throw error;
 		}
 	}
+
+	public async deleteUser(userId: string): Promise<Partial<UserInterface>> {
+		try {
+			const user: UserInterface = (await KnexClient.mysqlClient<UserInterface>(tableName).where('userId', userId).del()) as unknown as UserInterface;
+			return user;
+		} catch (error) {
+			console.error('Error deleting user:', error);
+			throw error;
+		}
+	}
 }
 
 export { UsersDAO, UserInterface };

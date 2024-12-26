@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { logger } from '../utils/index.js';
-import { UserService } from '../services/user/index.js';
+import { AuthService } from '../services/auth/index.js';
 
-class UserController {
-	private userServices = new UserService();
+class AuthController {
+	private authServices = new AuthService();
 
 	public signup = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-		const className = UserController.name;
+		const className = AuthController.name;
 		const functionName = this.signup.name;
 		try {
-			const createUser = await this.userServices.createUser(req.body);
+			const createUser = await this.authServices.createUser(req.body);
 			if (!createUser) {
 				return res.status(400).json({ status: 400, data: null, message: 'signup failed', error: null });
 			}
@@ -21,10 +21,10 @@ class UserController {
 	};
 
 	public signin = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-		const className = UserController.name;
+		const className = AuthController.name;
 		const functionName = this.signin.name;
 		try {
-			const loginUser = await this.userServices.login(req.body);
+			const loginUser = await this.authServices.login(req.body);
 			if (!loginUser) {
 				return res.status(400).json({ status: 400, data: null, message: 'login failed', error: null });
 			}
@@ -36,11 +36,11 @@ class UserController {
 	};
 
 	public logout = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
-		const className = UserController.name;
+		const className = AuthController.name;
 		const functionName = this.logout.name;
 		try {
 			console.log(req.header('authorization')?.replace('Bearer ', ''));
-			const loginUserOut = await this.userServices.logout(req.header('authorization')?.replace('Bearer ', '') as string);
+			const loginUserOut = await this.authServices.logout(req.header('authorization')?.replace('Bearer ', '') as string);
 			if (!loginUserOut) {
 				return res.status(400).json({ status: 400, data: null, message: 'logout failed', error: null });
 			}
@@ -50,18 +50,6 @@ class UserController {
 			return next(error);
 		}
 	};
-
-	public getAllUsers = async (req: Request, res: Response): Promise<Response> => {
-		const className = UserController.name;
-		const functionName = this.getAllUsers.name;
-		try {
-			const users = await this.userServices.getAllUsers(req.user as { userId: string });
-			return res.status(200).json({ status: 200, data: users, message: 'users fetched successfully', error: null });
-		} catch (error) {
-			logger.error({ functionName, message: 'getAllUsers catch error', error, className });
-			return res.status(500).json({ status: 500, data: null, message: 'Internal Server Error', error: null });
-		}
-	};
 }
 
-export { UserController };
+export { AuthController };
