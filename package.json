@@ -17,6 +17,7 @@
 		"prepare": "husky",
 		"prettier:check": "prettier . --check",
 		"prettier:write": "prettier . --write",
+		"prod": "node --env-file=.env dist/src/index",
 		"start": "tsx --env-file=.env src/index.ts"
 	},
 	"lint-staged": {
