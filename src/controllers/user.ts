@@ -51,8 +51,16 @@ class UserController {
 		}
 	};
 
-	public secure = async (_req: Request, res: Response): Promise<Response> => {
-		return res.status(200).json({ status: 200, data: null, message: 'secure route', error: null });
+	public getAllUsers = async (req: Request, res: Response): Promise<Response> => {
+		const className = UserController.name;
+		const functionName = this.getAllUsers.name;
+		try {
+			const users = await this.userServices.getAllUsers(req.user as { userId: string });
+			return res.status(200).json({ status: 200, data: users, message: 'users fetched successfully', error: null });
+		} catch (error) {
+			logger.error({ functionName, message: 'getAllUsers catch error', error, className });
+			return res.status(500).json({ status: 500, data: null, message: 'Internal Server Error', error: null });
+		}
 	};
 }
 

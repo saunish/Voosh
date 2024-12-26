@@ -83,6 +83,17 @@ class UsersDAO {
 			throw error;
 		}
 	}
+
+	public async getAllUsersByParentId(parentId: string, includedFields: (keyof UserInterface)[] | null = null, excludedFields: (keyof UserInterface)[] | null = null) {
+		try {
+			const selectFields: string[] = getSelectFields(ALL_FIELDS, this.defaultExcludedFields, includedFields, excludedFields);
+			const users = await KnexClient.mysqlClient<UserInterface>(tableName).select(selectFields).where('parentId', parentId);
+			return users;
+		} catch (error) {
+			console.error('Error getting all users by parent id:', error);
+			throw error;
+		}
+	}
 }
 
 export { UsersDAO, UserInterface };

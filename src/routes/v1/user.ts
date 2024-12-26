@@ -38,10 +38,10 @@ const routeConfig = [
 		controller: userController.logout,
 	},
 	{
-		path: 'secure',
-		method: 'post',
-		middlewares: [authValidatorInstance.validate(), checkAbility('delete', 'Track')],
-		controller: userController.secure,
+		path: 'getAllUsers',
+		method: 'get',
+		middlewares: [authValidatorInstance.validate(), checkAbility('read', 'User')],
+		controller: userController.getAllUsers,
 	},
 ];
 

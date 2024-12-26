@@ -80,6 +80,24 @@ class UserService {
 			throw error;
 		}
 	}
+
+	public async getAllUsers(body: { userId: string }): Promise<unknown> {
+		const className = UserService.name;
+		const functionName = this.getAllUsers.name;
+		try {
+			const [error, users] = await safePromise(this.usersDAO.getAllUsersByParentId(body.userId));
+			if (hasValue(error)) {
+				return Promise.reject(createHttpResponse({ status: 500, message: 'Internal Server Error' }));
+			} else if (hasValue(users)) {
+				return createHttpResponse({ status: 200, message: 'All users', data: users });
+			} else {
+				return createHttpResponse({ status: 404, message: 'No users found' });
+			}
+		} catch (error: unknown) {
+			logger.error({ functionName, message: 'getAllUsers catch error', error, className });
+			throw error;
+		}
+	}
 }
 
 export { UserService };
