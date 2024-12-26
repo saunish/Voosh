@@ -83,6 +83,40 @@ class UsersService {
 			throw error;
 		}
 	}
+
+	public async updatePassword(body: { userId: string; email: string; oldPassword: string; newPassword: string }): Promise<unknown> {
+		const className = UsersService.name;
+		const functionName = this.updatePassword.name;
+		try {
+			const [errorVerifyUser, verifyUser] = await safePromise(this.usersDAO.getUserByEmail(body.email, null, null, true));
+			if (hasValue(errorVerifyUser)) {
+				return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request` }));
+			} else if (hasValue(verifyUser)) {
+				if (verifyUser.password) {
+					const verifyPassword = await BcryptHelper.comparePassword(body.oldPassword, verifyUser.password);
+					if (!verifyPassword) return Promise.reject(createHttpResponse({ status: 409, message: `Bad Request, Reason: invalid password` }));
+					else {
+						const hashedPassword: string = await BcryptHelper.hashPassword(body.newPassword);
+						const [error, user] = await safePromise(this.usersDAO.updateUserById({ password: hashedPassword }, body.userId));
+						if (hasValue(error)) {
+							return Promise.reject(createHttpResponse({ status: 500, message: 'Internal Server Error' }));
+						} else if (hasValue(user)) {
+							return createHttpResponse({ status: 200, message: 'Password updated', data: user });
+						} else {
+							return createHttpResponse({ status: 404, message: 'User not found' });
+						}
+					}
+				} else {
+					return Promise.reject(createHttpResponse({ status: 400, message: `User not found.` }));
+				}
+			} else {
+				return Promise.reject(createHttpResponse({ status: 409, message: `User not found.` }));
+			}
+		} catch (error: unknown) {
+			logger.error({ functionName, message: 'updatePassword catch error', error, className });
+			throw error;
+		}
+	}
 }
 
 export { UsersService };

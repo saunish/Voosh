@@ -40,6 +40,23 @@ class UsersController {
 			return res.status(500).json({ status: 500, data: null, message: 'Internal Server Error', error: null });
 		}
 	};
+
+	public updatePassword = async (req: Request, res: Response): Promise<Response> => {
+		const className = UsersController.name;
+		const functionName = this.updatePassword.name;
+		try {
+			const payload = {
+				...req.body,
+				...req.user,
+				token: req.header('authorization')?.replace('Bearer ', '') as string,
+			};
+			const user = await this.usersServices.updatePassword(payload);
+			return res.status(200).json({ status: 200, data: user, message: 'user added successfully', error: null });
+		} catch (error) {
+			logger.error({ functionName, message: 'addUser catch error', error, className });
+			return res.status(500).json({ status: 500, data: null, message: 'Internal Server Error', error: null });
+		}
+	};
 }
 
 export { UsersController };

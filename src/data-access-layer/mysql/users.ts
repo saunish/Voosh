@@ -104,6 +104,16 @@ class UsersDAO {
 			throw error;
 		}
 	}
+
+	public async updateUserById(userUpdateDetails: Partial<UserInterface>, userId: string): Promise<Partial<UserInterface>> {
+		try {
+			const user: UserInterface = (await KnexClient.mysqlClient<UserInterface>(tableName).where('userId', userId).update(userUpdateDetails)) as unknown as UserInterface;
+			return user;
+		} catch (error) {
+			console.error('Error updating user by userId:', error);
+			throw error;
+		}
+	}
 }
 
 export { UsersDAO, UserInterface };

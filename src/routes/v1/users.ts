@@ -33,6 +33,21 @@ const routeConfig = [
 		middlewares: [authValidatorInstance.validate(), checkAbility('manage', 'User')],
 		controller: usersController.deleteUser,
 	},
+	{
+		path: 'update-password',
+		method: 'put',
+		middlewares: [
+			authValidatorInstance.validate(),
+			checkAbility('update', 'User'),
+			requestValidatorInstance.validate(
+				Joi.object({
+					oldPassword: Joi.string().required(),
+					newPassword: Joi.string().required(),
+				}).required(),
+			),
+		],
+		controller: usersController.updatePassword,
+	},
 ];
 
 export { routeConfig };
