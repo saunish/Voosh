@@ -19,7 +19,7 @@ export function getSelectFields<TFields extends string | number | symbol>(
 export const safePromise = <T>(promise: Promise<T>): Promise<[null, T] | [Error, null]> =>
 	promise.then((data) => [null, data] as [null, T]).catch((err) => [err instanceof Error ? err : new Error(String(err)), null]);
 
-export function hasValue<T>(value: T): boolean {
+export function hasValue<T>(value: T | null | undefined): value is NonNullable<T> {
 	if (value === null || value === undefined) return false;
 	if (typeof value === 'string' && value.trim() === '') return false;
 	if (Array.isArray(value) && value.length === 0) return false;

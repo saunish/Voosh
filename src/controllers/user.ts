@@ -20,15 +20,23 @@ class UserController {
 		}
 	};
 
-	public static signin = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
+	public signin = async (req: Request, res: Response, next: NextFunction): Promise<void | Response> => {
 		const className = UserController.name;
 		const functionName = this.signin.name;
 		try {
-			return res.status(200).json({ message: 'signin successful' });
+			const loginUser = await this.userServices.login(req.body);
+			if (!loginUser) {
+				return res.status(400).json({ status: 400, data: null, message: 'login failed', error: null });
+			}
+			return res.status(200).json(loginUser);
 		} catch (error) {
-			logger.error({ functionName, message: 'signin catch error', error, className });
+			logger.error({ functionName, message: 'login catch error', error, className });
 			return next(error);
 		}
+	};
+
+	public secure = async (_req: Request, res: Response): Promise<Response> => {
+		return res.status(200).json({ status: 200, data: null, message: 'secure route', error: null });
 	};
 }
 

@@ -4,6 +4,7 @@ import { Middleware } from '../middlewares/index.js';
 import { KnexClient } from './knex.js';
 import { Redis } from './redis.js';
 import { Route } from '../routes/index.js';
+import { PassportLoader } from './passport.js';
 
 class Server {
 	public static app: express.Application;
@@ -23,6 +24,9 @@ class Server {
 
 			await Redis.init();
 			logger.info({ functionName, message: 'Redis loaded successfully', className });
+
+			await PassportLoader.init();
+			logger.info({ functionName, message: 'Passport loaded successfully', className });
 
 			await Route.load(Server.app);
 			logger.info({ functionName, message: 'routes loaded successfully', className });

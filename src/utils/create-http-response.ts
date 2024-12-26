@@ -1,3 +1,5 @@
+import { hasValue } from './helpers.js';
+
 interface CreateHttpResponseInterface {
 	status: number;
 	message: string;
@@ -6,7 +8,12 @@ interface CreateHttpResponseInterface {
 }
 
 const createHttpResponse = (httpResponseObject: CreateHttpResponseInterface) => {
-	const { status, message, data = null, error = null } = httpResponseObject;
+	const {
+		status,
+		message,
+		data = hasValue(httpResponseObject.data) ? httpResponseObject.data : null,
+		error = hasValue(httpResponseObject.error) ? httpResponseObject.error : null,
+	} = httpResponseObject;
 	return { status, message, data, error };
 };
 

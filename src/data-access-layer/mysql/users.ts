@@ -56,13 +56,30 @@ class UsersDAO {
 		email: string,
 		includedFields: (keyof UserInterface)[] | null = null,
 		excludedFields: (keyof UserInterface)[] | null = null,
+		ignoreExcludedFields = false,
 	): Promise<Partial<UserInterface>> {
 		try {
-			const selectFields: string[] = getSelectFields(ALL_FIELDS, this.defaultExcludedFields, includedFields, excludedFields);
+			const selectFields: string[] = getSelectFields(ALL_FIELDS, ignoreExcludedFields ? [] : this.defaultExcludedFields, includedFields, excludedFields);
 			const user: UserInterface = (await KnexClient.mysqlClient<UserInterface>(tableName).select(selectFields).where('email', email).first()) as unknown as UserInterface;
 			return user;
 		} catch (error) {
 			console.error('Error getting user by email:', error);
+			throw error;
+		}
+	}
+
+	public async getUserById(
+		userId: string,
+		includedFields: (keyof UserInterface)[] | null = null,
+		excludedFields: (keyof UserInterface)[] | null = null,
+		ignoreExcludedFields = false,
+	): Promise<Partial<UserInterface>> {
+		try {
+			const selectFields: string[] = getSelectFields(ALL_FIELDS, ignoreExcludedFields ? [] : this.defaultExcludedFields, includedFields, excludedFields);
+			const user: UserInterface = (await KnexClient.mysqlClient<UserInterface>(tableName).select(selectFields).where({ userId }).first()) as unknown as UserInterface;
+			return user;
+		} catch (error) {
+			console.error('Error getting user by userId:', error);
 			throw error;
 		}
 	}

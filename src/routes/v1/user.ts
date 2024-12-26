@@ -1,5 +1,5 @@
 import { UserController } from '../../controllers/index.js';
-import { requestValidatorInstance } from '../../utils/index.js';
+import { authValidatorInstance, requestValidatorInstance } from '../../utils/index.js';
 import Joi from 'joi';
 
 const userController = new UserController();
@@ -19,7 +19,7 @@ const routeConfig = [
 		controller: userController.signup,
 	},
 	{
-		path: 'signin',
+		path: 'login',
 		method: 'post',
 		middlewares: [
 			requestValidatorInstance.validate(
@@ -29,7 +29,13 @@ const routeConfig = [
 				}).required(),
 			),
 		],
-		controller: UserController.signin,
+		controller: userController.signin,
+	},
+	{
+		path: 'secure',
+		method: 'post',
+		middlewares: [authValidatorInstance.validate()],
+		controller: userController.secure,
 	},
 ];
 
