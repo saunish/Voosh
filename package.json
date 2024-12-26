@@ -6,7 +6,7 @@
 	"scripts": {
 		"prebuild": "rimraf dist",
 		"build": "tsc",
-		"knex": "tsx --env-file=.env -- ./node_modules/knex/bin/cli.js --knexfile src/boot/knex.ts",
+		"knex": "tsx --env-file=.knex.env -- ./node_modules/knex/bin/cli.js --knexfile src/boot/knex.ts",
 		"lint": "eslint --fix",
 		"lint-staged": "lint-staged",
 		"migrate:down": "npm run knex -- migrate:down",
